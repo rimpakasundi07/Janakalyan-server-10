@@ -9,11 +9,10 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// janakalyanUser
-//password:o9et69nKGfYFF6oL
-
 const uri =
   "mongodb+srv://janakalyanUser:o9et69nKGfYFF6oL@cluster0.obgikox.mongodb.net/?appName=Cluster0";
+
+// const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.obgikox.mongodb.net/?appName=Cluster0`;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -33,6 +32,7 @@ async function run() {
 
     const db = client.db("janakalya_db");
     const categoryCollection = db.collection("category");
+    const issueCollection = client.db("janakalya_db").collection("issue");
 
     // .
 
@@ -55,17 +55,24 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/issue", async (req, res) => {
+      const newIssue = req.body;
+      const result = await issueCollection.insertOne(newIssue);
+      res.send(result);
+    });
+
+    app.get("/issue", async (req, res) => {
+      const cursor = issueCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     app.patch("/category/:id", async (req, res) => {
       const id = req.params.id;
       const updatedCategory = req.body;
       const query = { _id: new ObjectId(id) };
       const update = {
         $set: updatedCategory,
-
-        // $set:{
-        // name: ...
-        // day : ...
-        // }
       };
       const result = await categoryCollection.updateOne(query, update);
       res.send(result);
