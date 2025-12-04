@@ -48,6 +48,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/issue/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await issueCollection.findOne(query);
+      res.send(result);
+    });
+
     app.get("/category/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
