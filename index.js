@@ -33,6 +33,9 @@ async function run() {
     const db = client.db("janakalya_db");
     const categoryCollection = db.collection("category");
     const issueCollection = client.db("janakalya_db").collection("issue");
+    const contributionCollection = client
+      .db("janakalya_db")
+      .collection("contributions");
 
     // .
 
@@ -52,6 +55,13 @@ async function run() {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await issueCollection.findOne(query);
+      res.send(result);
+    });
+
+    //contributionCollection
+    app.post("/myContribution", async (req, res) => {
+      const newIssue = req.body;
+      const result = await contributionCollection.insertOne(newIssue);
       res.send(result);
     });
 
