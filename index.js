@@ -37,8 +37,6 @@ async function run() {
       .db("janakalya_db")
       .collection("contributions");
 
-    // .
-
     app.get("/category", async (req, res) => {
       const cursor = categoryCollection.find();
       const result = await cursor.toArray();
@@ -48,6 +46,12 @@ async function run() {
     app.get("/latest-issue", async (req, res) => {
       const cursor = issueCollection.find().sort({ amount: -1 }).limit(6);
       const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/myIssues", async (req, res) => {
+      const email = req.query.email;
+      const result = await issueCollection.find({ email }).toArray();
       res.send(result);
     });
 
@@ -65,11 +69,10 @@ async function run() {
       res.send(result);
     });
 
-    //
-
+    // single email e theke data ...
     app.get("/myContribution", async (req, res) => {
-      const cursor = contributionCollection.find();
-      const result = await cursor.toArray();
+      const email = req.query.email;
+      const result = await contributionCollection.find({ email }).toArray();
       res.send(result);
     });
 
